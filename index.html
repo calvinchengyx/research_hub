@@ -39,8 +39,10 @@
         }
 
         .pipeline-wrapper {
-            min-width: 200px; 
-            flex-shrink: 0;
+            /* Updated to use flex properties for fluid width */
+            flex-grow: 1; 
+            flex-basis: calc(16.666% - 1rem); /* Base size for 6 blocks + gaps */
+            flex-shrink: 0; 
             position: relative;
         }
 
