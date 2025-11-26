@@ -11,6 +11,9 @@ this is a memo for hub development, not specific project content.
   - feed into gemini 3 pro to build and visualize the structure
   - iterate by revising design details
   - output a full codebase for github pages hosting, then deploy
-- end: 19:30
+- end: 20:00
 - result: 
   - a prototype github page for central management of my research projects (no content yet)
+  - [link](https://calvinchengyx.github.io/research_hub/)
+- next steps: 
+  - update project content
