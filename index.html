@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Overview Hub - Dashboard Preview</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'hub-primary': '#10b981', // Emerald for accent
+                        'hub-bg': '#f7f9fb', // Light grey background
+                        'hub-arrow': '#d1d5db',
+                        'hub-archive': '#6b7280', // Gray for archived projects
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Pipeline Styles */
+        .pipeline-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem; /* Reduced space between blocks */
+            padding-bottom: 1rem;
+            align-items: flex-start;
+        }
+
+        .pipeline-wrapper {
+            min-width: 200px; 
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .pipeline-block {
+            min-height: 250px;
+            border-radius: 12px;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            border-top: 5px solid;
+            transition: all 0.3s ease;
+            width: 100%;
+            padding: 1.25rem; 
+        }
+
+        /* Arrow Visualization */
+        .pipeline-arrow {
+            position: absolute;
+            top: 50px; 
+            right: -18px; 
+            z-index: 10;
+            color: #d1d5db; 
+        }
+        
+        /* Card Styles */
+        .card-project {
+            border-left: 3px solid;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .card-project:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px -3px rgba(16, 185, 129, 0.2);
+        }
+        .card-archive {
+            border-left: 3px solid #6b7280;
+        }
+        
+        /* Specific colors for stages */
+        .stage-idea { border-color: #3b82f6; }
+        .stage-prep { border-color: #f59e0b; }
+        .stage-data { border-color: #ef4444; }
+        .stage-writing { border-color: #a855f7; }
+        .stage-pub { border-color: #22c55e; }
+        .stage-promo { border-color: #06b6d4; }
+    </style>
+</head>
+<body class="bg-hub-bg p-4 md:p-8">
+
+    <div class="max-w-full mx-auto">
+        <header class="mb-8 text-center">
+            <h1 class="text-4xl font-extrabold text-gray-900 flex items-center justify-center">
+                <span class="mr-3">🔬</span> Project Overview Hub - Dashboard
+            </h1>
+            <p class="text-gray-500 mt-2 italic">Central visualization of the project pipeline and focus areas. Scroll horizontally to view all stages.</p>
+        </header>
+
+        <!-- Main Pipeline Row (6 Blocks) -->
+        <div id="pipeline-blocks-container" class="pipeline-container">
+            <!-- Pipeline blocks will be injected here by JavaScript -->
+        </div>
+
+        <!-- Footnotes Section for Block Descriptions -->
+        <div class="mt-8 p-4 bg-gray-100 rounded-xl shadow-inner">
+            <h3 class="text-lg font-bold text-gray-700 mb-3">Pipeline Stage Definitions:</h3>
+            <div id="pipeline-footnotes" class="text-sm text-gray-600 space-y-2">
+                <!-- Footnotes injected here by JS -->
+            </div>
+        </div>
+
+        <!-- Project Detail Panel (Expanded Card View) -->
+        <div id="project-detail-panel" class="mt-8 p-6 bg-white rounded-xl shadow-xl border-l-4 border-hub-primary hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" id="detail-project-name"></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <!-- Timeline -->
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">C. Timeline</h3>
+                    <p><span class="font-medium">Stage:</span> <span id="detail-stage" class="text-hub-primary font-bold"></span></p>
+                    <p><span class="font-medium">Start:</span> <span id="detail-start"></span></p>
+                    <p><span class="font-medium">Updated:</span> <span id="detail-updated"></span></p>
+                </div>
+                
+                <!-- Metadata -->
+                <div class="p-4 bg-gray-50 rounded-lg md:col-span-2">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">B. Project Metadata</h3>
+                    <div class="flex flex-wrap gap-4 text-sm">
+                        <a id="link-overleaf" href="#" target="_blank" class="text-blue-600 hover:underline">Overleaf</a>
+                        <a id="link-gdoc" href="#" target="_blank" class="text-blue-600 hover:underline">Google Doc</a>
+                        <a id="link-github" href="#" target="_blank" class="text-blue-600 hover:underline">GitHub Repo</a>
+                        <p id="detail-team" class="text-gray-600"><span class="font-medium">Team:</span> <span id="detail-team-content"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Log -->
+            <div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">A. Update Log ("Project News")</h3>
+                <div id="detail-log-feed" class="space-y-4">
+                    <!-- Log entries injected here -->
+                </div>
+            </div>
+            <button onclick="hideDetails()" class="mt-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition duration-200">
+                Close Details
+            </button>
+        </div>
+
+
+        <!-- Daily Log and Archive Blocks (50%/50% width on large screens) -->
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Daily Log Preview (Left Half) -->
+            <div class="p-6 bg-white rounded-xl shadow-lg border-l-4 border-hub-primary">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex justify-between items-center">
+                    <span>📅 Daily Log Preview (Last 5 Days)</span>
+                    <a href="logs/daily-log.md" target="_blank" class="bg-hub-primary hover:bg-emerald-600 text-white font-semibold py-1 px-3 rounded-lg text-sm transition duration-200">
+                        Go to Full Log
+                    </a>
+                </h2>
+                
+                <div id="daily-log-feed" class="space-y-4 max-h-96 overflow-y-auto pr-3">
+                    <!-- Log entries injected here by JS -->
+                </div>
+            </div>
+
+            <!-- Archive Block (Right Half) -->
+            <div class="p-6 bg-white rounded-xl shadow-lg border-l-4 border-gray-400">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex justify-between items-center">
+                    <span>📦 Project Archive</span>
+                </h2>
+                <div id="archive-feed" class="space-y-4 max-h-96 overflow-y-auto pr-3">
+                    <!-- Archive entries injected here by JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <p class="text-sm text-gray-400 mt-4 text-center max-w-7xl mx-auto">*Note: This is a visualization demo. In deployment, content is read from external Markdown files via GitHub's raw links.*</p>
+    </div>
+
+    <script>
+        // --- SIMULATED MARKDOWN CONTENT (This is the content you maintain) ---
+        // NOTE: In a live environment, these strings would be the fetched content 
+        // from your GitHub hosted files (README.md, logs/daily-log.md, etc.)
+
+        const SIM_README_MD = `
+# Project Overview Hub
+
+## IDEA
+- Card: AI-Driven Literature Review | Lead: Dr. J. Smith | Start: 2025-10-01 | Status: Scoping Phase | Link: projects/projectA.md
+- Card: Next-Gen Sensor Design | Lead: A. User | Start: 2025-11-15 | Status: Concept Outline Drafted | Link: projects/projectB.md
+
+## PREPARATION
+
+## DATA
+- Card: Field Study 2025 Analysis | Lead: S. Chen | Start: 2025-05-20 | Status: 75% Data Cleaned | Link: projects/projectC.md
+
+## WRITING
+
+## PUBLICATION
+- Card: Model Validation Paper | Lead: Dr. J. Smith | Start: 2024-09-01 | Status: R&R (Minor Revisions) | Link: projects/projectD.md
+
+## PROMOTION
+- Card: Archival Methods Review | Lead: A. User | Start: 2025-03-01 | Status: Upcoming Conference Talk (x1) | Link: projects/projectE.md
+
+## ARCHIVE
+- Card: Legacy Data Migration | Lead: A. User | Start: 2023-01-01 | End: 2025-01-15 | Link: projects/archive_legacy.md
+- Card: Introductory Paper 2024 | Lead: Dr. J. Smith | Start: 2024-03-10 | End: 2024-12-05 | Link: projects/archive_intro.md
+- Card: Semester Capstone Project | Lead: S. Chen | Start: 2024-09-01 | End: 2024-12-20 | Link: projects/archive_capstone.md
+        `;
+
+        const SIM_DAILY_LOG_MD = `
+## 2025-11-26 (Wednesday)
+| Project | Task/Update | Time Spent | Next Steps |
+| :--- | :--- | :--- | :--- |
+| Project D (Publication) | Drafted initial reply to Reviewer 2 comments on Methodology section. | 2.5h | Integrate feedback from team lead. |
+| Project A (Idea) | Created the basic 1-page concept note outline. Added 3 key literature links. | 1.0h | Schedule scoping meeting with team. |
+| Project C (Data) | Debugged error in visualization script (fixed issue with NaN values in time series). | 1.5h | Regenerate all robustness checks. |
+
+## 2025-11-25 (Tuesday)
+| Project | Task/Update | Time Spent | Next Steps |
+| :--- | :--- | :--- | :--- |
+| Project D (Publication) | Read and summarized the journal Reviewer Reports. Created a response outline. | 3.0h | Start drafting the formal response. |
+| Project B (Preparation) | Conducted a preliminary search for potential collaborators in the field. | 1.0h | Draft a recruitment email. |
+
+## 2025-11-24 (Monday)
+| Project | Task/Update | Time Spent | Next Steps |
+| :--- | :--- | :--- | :--- |
+| Project C (Data) | Ran initial validation scripts on collected field data. Found NaN issue. | 2.0h | Debug data cleaning script. |
+        `;
+
+        const SIM_PROJECT_DETAIL_MD = `
+# AI-Driven Literature Review
+
+## METADATA
+| Key | Value |
+| --- | --- |
+| Overleaf | https://www.overleaf.com/ai-lit-review |
+| GDoc | https://docs.google.com/doc/ai-lit-notes |
+| GitHub | https://github.com/drjsmith/ai-lit-review |
+| Team | Dr. J. Smith, B. Chang, T. Kuma |
+| Start | 2025-10-01 |
+| Stage | Idea |
+| Last Updated | 2025-11-26 |
+
+## LOG
+* 2025-11-26: Initial setup complete. Created the project dedicated Markdown file and populated the core metadata. Next step is to finalize the ethics approval application.
+* 2025-11-20: Initial concept note approved by team. Moving project from "Idea" to "Preparation" stage on the main dashboard.
+* 2025-10-01: Project officially started.
+        `;
+
+        // Stage Definitions (Hardcoded, as these don't change often)
+        const stageDescriptions = {
+            'IDEA': {
+                definition: 'Brainstorming and scoping.',
+                output: '1-page concept note with key literature links, motivation, question, expected results, basic study design.'
+            },
+            'PREPARATION': {
+                definition: 'Refining design and setup.',
+                output: 'Brief literature review (≤10 papers), preliminary research framework, ethics approval, preregistration, collaborator recruitment, work distribution.'
+            },
+            'DATA': {
+                definition: 'Empirical work and analysis.',
+                output: 'Data collection, analysis, validation, robustness checks, visualizations; draft methods/results/appendix.'
+            },
+            'WRITING': {
+                definition: 'Full drafting process.',
+                output: 'Preprint-ready manuscript.'
+            },
+            'PUBLICATION': {
+                definition: 'Submission and revision cycle.',
+                output: 'Journal submission, response to reviewers, resubmission.'
+            },
+            'PROMOTION': {
+                definition: 'Communication and outreach.',
+                output: 'LinkedIn announcements (preprint ×1, publication ×2), conference presentations ×3, other talks ×4.'
+            },
+        };
+
+        const STAGE_ORDER = ['IDEA', 'PREPARATION', 'DATA', 'WRITING', 'PUBLICATION', 'PROMOTION'];
+        const stageColors = {
+            'IDEA': 'stage-idea', 'PREPARATION': 'stage-prep', 'DATA': 'stage-data', 
+            'WRITING': 'stage-writing', 'PUBLICATION': 'stage-pub', 'PROMOTION': 'stage-promo'
+        };
+
+
+        // --- 2. PARSING & RENDERING FUNCTIONS ---
+
+        // Simulates fetching content from a file path
+        function simulateFetch(filePath) {
+            if (filePath.includes('daily-log.md')) return SIM_DAILY_LOG_MD;
+            if (filePath.includes('projectA.md')) return SIM_PROJECT_DETAIL_MD;
+            return SIM_README_MD; // Default to README for dashboard/archive parsing
+        }
+
+        // Parses the main README content to build the pipeline and archive data
+        function parseDashboardContent(markdown) {
+            const pipelineData = {};
+            const archiveData = [];
+            const sections = markdown.split(/##\s+/).filter(s => s.trim());
+            
+            for (const section of sections) {
+                const lines = section.trim().split('\n');
+                const stageName = lines[0].trim().toUpperCase();
+                const cards = [];
+
+                for (const line of lines.slice(1)) {
+                    if (line.trim().startsWith('- Card:')) {
+                        const parts = line.replace('- Card:', '').trim().split(' | ');
+                        const card = {};
+                        parts.forEach(p => {
+                            const [key, val] = p.split(':');
+                            if (key && val) {
+                                card[key.trim()] = val.trim();
+                            }
+                        });
+
+                        if (stageName === 'ARCHIVE') {
+                            archiveData.push(card);
+                        } else {
+                            // Extract Project ID for the link
+                            const linkMatch = card.Link ? card.Link.match(/projects\/(.*)\.md/) : null;
+                            card.id = linkMatch ? linkMatch[1] : 'default';
+                            cards.push(card);
+                        }
+                    }
+                }
+                if (stageName !== 'ARCHIVE') {
+                    pipelineData[stageName] = cards;
+                }
+            }
+            return { pipelineData, archiveData };
+        }
+
+        // Renders the main pipeline blocks
+        function renderPipeline(pipelineData) {
+            const container = document.getElementById('pipeline-blocks-container');
+            container.innerHTML = '';
+            
+            STAGE_ORDER.forEach((stageName, index) => {
+                const cards = pipelineData[stageName] || [];
+                const colorClass = stageColors[stageName];
+                const isLast = index === STAGE_ORDER.length - 1;
+
+                const cardHtml = cards.length > 0
+                    ? cards.map(card => `
+                        <div class="card-project ${colorClass} bg-${colorClass.replace('stage-', '').split('-')[0]}-50/50 p-3 rounded-lg mb-3" onclick="showDetails('${card.id}')">
+                            <p class="font-semibold text-${colorClass.replace('stage-', '').split('-')[0]}-800">${card['Project']}</p>
+                            <p class="text-xs text-gray-600">Lead: ${card['Lead']}</p>
+                            <p class="text-sm mt-1">Status: <span class="text-${colorClass.replace('stage-', '').split('-')[0]}-700 font-medium">${card['Status']}</span></p>
+                            <a href="#project-detail-panel" class="text-xs text-${colorClass.replace('stage-', '').split('-')[0]}-500 hover:text-${colorClass.replace('stage-', '').split('-')[0]}-700 font-medium mt-1 inline-block">View Details</a>
+                        </div>
+                    `).join('')
+                    : '<p class="text-gray-400 italic text-center p-4">*(None)*</p>';
+
+                const arrowHtml = isLast ? '' : `<div class="pipeline-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>`;
+
+                container.innerHTML += `
+                    <div class="pipeline-wrapper">
+                        <div class="pipeline-block p-4 ${colorClass}">
+                            <h2 class="text-xl font-bold mb-4 text-gray-800 uppercase" id="stage-${stageName.toLowerCase()}">${stageName}</h2>
+                            ${cardHtml}
+                        </div>
+                        ${arrowHtml}
+                    </div>
+                `;
+            });
+        }
+
+        // Renders the Daily Log Preview
+        function renderDailyLogPreview(markdown) {
+            const container = document.getElementById('daily-log-feed');
+            container.innerHTML = '';
+            const days = markdown.split(/##\s+/).filter(s => s.trim()).slice(0, 5); // Take top 5 days
+
+            days.forEach(daySection => {
+                const lines = daySection.trim().split('\n').filter(l => l.trim());
+                if (lines.length < 2) return;
+
+                const dateTitle = lines[0]; // e.g., 2025-11-26 (Wednesday)
+                const tableLines = lines.slice(3); // Skip title, separator lines
+
+                const dayEntries = tableLines.map(line => {
+                    const values = line.split('|').map(v => v.trim()).filter(v => v && v !== '---');
+                    if (values.length < 4) return null; // Needs at least Project, Task, Time, Next
+
+                    return {
+                        project: values[0].trim(),
+                        update: values[1].trim(),
+                        time: values[2].trim(),
+                        next: values[3].trim(),
+                    };
+                }).filter(e => e);
+
+                dayEntries.forEach(entry => {
+                    container.innerHTML += `
+                        <div class="border-b border-gray-100 pb-3">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="text-xs font-bold text-gray-700 bg-gray-200 px-2 py-0.5 rounded">${dateTitle.split(' ')[0]}</span>
+                                <span class="text-xs text-hub-primary font-medium">${entry.project}</span>
+                            </div>
+                            <p class="text-sm text-gray-800 mb-1">${entry.update}</p>
+                            <div class="flex flex-wrap gap-x-4 text-xs text-gray-500">
+                                <span>Spent: ${entry.time}</span>
+                                <span>Next: ${entry.next}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        // Renders the Archive Block
+        function renderArchiveBlock(archiveData) {
+            const container = document.getElementById('archive-feed');
+            container.innerHTML = archiveData.map(project => `
+                <div class="card-archive bg-gray-50 p-3 rounded-lg mb-3">
+                    <p class="font-semibold text-gray-700">${project.Project}</p>
+                    <p class="text-xs text-gray-500">Lead: ${project.Lead} | Start: ${project.Start}</p>
+                    <p class="text-sm mt-1">Status: <span class="text-gray-600 font-medium">Finished on ${project.End}</span></p>
+                </div>
+            `).join('');
+        }
+
+        // Renders the Footnotes (Stage Definitions)
+        function renderFootnotes() {
+            const container = document.getElementById('pipeline-footnotes');
+            let notesHtml = '';
+            for (const stageName of STAGE_ORDER) {
+                const stage = stageDescriptions[stageName];
+                notesHtml += `
+                    <div class="mb-4">
+                        <a href="#stage-${stageName.toLowerCase()}" class="font-bold text-hub-primary hover:underline uppercase">§${stageName}</a>:
+                        <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                            <li><span class="font-semibold">Definition:</span> ${stage.definition}</li>
+                            <li><span class="font-semibold">Output:</span> ${stage.output}</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            container.innerHTML = notesHtml;
+        }
+        
+        // Detailed Panel Logic
+        function parseProjectDetail(markdown) {
+            const details = {};
+            const sections = markdown.split(/##\s+/).filter(s => s.trim());
+            
+            for (const section of sections) {
+                const title = section.split('\n')[0].trim();
+                if (title === 'METADATA') {
+                    const tableRows = section.split('\n').filter(line => line.includes('|') && !line.includes('---'));
+                    tableRows.forEach(row => {
+                        const [ , key, value ] = row.split('|').map(v => v.trim());
+                        if (key && value) details[key.toLowerCase()] = value;
+                    });
+                } else if (title === 'LOG') {
+                    details.log = section.split('\n').filter(line => line.trim().startsWith('*')).map(line => {
+                        const parts = line.replace(/^\*\s*/, '').trim().split(':');
+                        return { date: parts[0].trim(), event: parts.slice(1).join(':').trim() };
+                    });
+                }
+            }
+            
+            // Extract Project Name from H1
+            details.name = markdown.split('\n')[0].replace('# ', '').trim();
+
+            return details;
+        }
+
+        // Function to display the project detail panel
+        function showDetails(projectId) {
+            const markdown = simulateFetch(`projects/${projectId}.md`);
+            const project = parseProjectDetail(markdown);
+            const detailPanel = document.getElementById('project-detail-panel');
+            
+            // A. Update Log
+            const logHtml = project.log.map(entry => `
+                <div class="border-l-4 border-hub-primary pl-4 py-1 bg-gray-50 rounded-md">
+                    <p class="text-sm font-semibold text-gray-800">${entry.date} - Key Event</p>
+                    <p class="text-gray-600 text-sm">${entry.event}</p>
+                </div>
+            `).join('');
+            document.getElementById('detail-log-feed').innerHTML = logHtml;
+
+            // B. Project Metadata & Name
+            document.getElementById('detail-project-name').textContent = project.name;
+            document.getElementById('detail-team-content').textContent = project.team || 'N/A';
+            document.getElementById('link-overleaf').href = project.overleaf || '#';
+            document.getElementById('link-gdoc').href = project.gdoc || '#';
+            document.getElementById('link-github').href = project.github || '#';
+            
+            // C. Timeline
+            document.getElementById('detail-stage').textContent = project.stage || 'N/A';
+            document.getElementById('detail-start').textContent = project.start || 'N/A';
+            document.getElementById('detail-updated').textContent = project['last updated'] || 'N/A';
+
+            detailPanel.classList.remove('hidden');
+            detailPanel.scrollIntoView({ behavior: 'smooth' }); 
+        }
+
+        // Function to hide the project detail panel
+        function hideDetails() {
+            document.getElementById('project-detail-panel').classList.add('hidden');
+        }
+
+        // Main loader function
+        function loadDashboard() {
+            const { pipelineData, archiveData } = parseDashboardContent(SIM_README_MD);
+            
+            renderPipeline(pipelineData);
+            renderArchiveBlock(archiveData);
+            renderDailyLogPreview(simulateFetch('logs/daily-log.md'));
+            renderFootnotes();
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
+</body>
+</html>
