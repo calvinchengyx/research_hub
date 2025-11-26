@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Overview Hub - Dashboard Preview</title>
+    <title>Research Project Central Monitor Dashboard</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -82,7 +82,7 @@
         .stage-idea { border-color: #3b82f6; }
         .stage-prep { border-color: #f59e0b; }
         .stage-data { border-color: #ef4444; }
-        .stage-writing { border-color: #a855f7; }
+        .stage-writ { border-color: #a855f7; }
         .stage-pub { border-color: #22c55e; }
         .stage-promo { border-color: #06b6d4; }
     </style>
@@ -92,9 +92,8 @@
     <div class="max-w-full mx-auto">
         <header class="mb-8 text-center">
             <h1 class="text-4xl font-extrabold text-gray-900 flex items-center justify-center">
-                <span class="mr-3">🔬</span> Project Overview Hub - Dashboard
+                <span class="mr-3">🔬</span> Research Project Central Monitor Dashboard
             </h1>
-            <p class="text-gray-500 mt-2 italic">Central visualization of the project pipeline and focus areas. Scroll horizontally to view all stages.</p>
         </header>
 
         <!-- Main Pipeline Row (6 Blocks) -->
@@ -154,7 +153,7 @@
             <!-- Daily Log Preview (Left Half) -->
             <div class="p-6 bg-white rounded-xl shadow-lg border-l-4 border-hub-primary">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4 flex justify-between items-center">
-                    <span>📅 Daily Log Preview (Last 5 Days)</span>
+                    <span> Daily Log Preview (Last 5 Days)</span>
                     <a href="logs/daily-log.md" target="_blank" class="bg-hub-primary hover:bg-emerald-600 text-white font-semibold py-1 px-3 rounded-lg text-sm transition duration-200">
                         Go to Full Log
                     </a>
@@ -192,17 +191,17 @@
 - Card: AI-Driven Literature Review | Lead: Dr. J. Smith | Start: 2025-10-01 | Status: Scoping Phase | Link: projects/projectA.md
 - Card: Next-Gen Sensor Design | Lead: A. User | Start: 2025-11-15 | Status: Concept Outline Drafted | Link: projects/projectB.md
 
-## PREPARATION
+## PREP
 
 ## DATA
 - Card: Field Study 2025 Analysis | Lead: S. Chen | Start: 2025-05-20 | Status: 75% Data Cleaned | Link: projects/projectC.md
 
-## WRITING
+## WRIT
 
-## PUBLICATION
+## PUBL
 - Card: Model Validation Paper | Lead: Dr. J. Smith | Start: 2024-09-01 | Status: R&R (Minor Revisions) | Link: projects/projectD.md
 
-## PROMOTION
+## PROM
 - Card: Archival Methods Review | Lead: A. User | Start: 2025-03-01 | Status: Upcoming Conference Talk (x1) | Link: projects/projectE.md
 
 ## ARCHIVE
@@ -222,8 +221,8 @@
 ## 2025-11-25 (Tuesday)
 | Project | Task/Update | Time Spent | Next Steps |
 | :--- | :--- | :--- | :--- |
-| Project D (Publication) | Read and summarized the journal Reviewer Reports. Created a response outline. | 3.0h | Start drafting the formal response. |
-| Project B (Preparation) | Conducted a preliminary search for potential collaborators in the field. | 1.0h | Draft a recruitment email. |
+| Project D (Pub) | Read and summarized the journal Reviewer Reports. Created a response outline. | 3.0h | Start drafting the formal response. |
+| Project B (Prep) | Conducted a preliminary search for potential collaborators in the field. | 1.0h | Draft a recruitment email. |
 
 ## 2025-11-24 (Monday)
 | Project | Task/Update | Time Spent | Next Steps |
@@ -247,7 +246,7 @@
 
 ## LOG
 * 2025-11-26: Initial setup complete. Created the project dedicated Markdown file and populated the core metadata. Next step is to finalize the ethics approval application.
-* 2025-11-20: Initial concept note approved by team. Moving project from "Idea" to "Preparation" stage on the main dashboard.
+* 2025-11-20: Initial concept note approved by team. Moving project from "Idea" to "Prep" stage on the main dashboard.
 * 2025-10-01: Project officially started.
         `;
 
@@ -257,7 +256,7 @@
                 definition: 'Brainstorming and scoping.',
                 output: '1-page concept note with key literature links, motivation, question, expected results, basic study design.'
             },
-            'PREPARATION': {
+            'PREP': {
                 definition: 'Refining design and setup.',
                 output: 'Brief literature review (≤10 papers), preliminary research framework, ethics approval, preregistration, collaborator recruitment, work distribution.'
             },
@@ -265,24 +264,24 @@
                 definition: 'Empirical work and analysis.',
                 output: 'Data collection, analysis, validation, robustness checks, visualizations; draft methods/results/appendix.'
             },
-            'WRITING': {
+            'WRIT': {
                 definition: 'Full drafting process.',
                 output: 'Preprint-ready manuscript.'
             },
-            'PUBLICATION': {
+            'PUB': {
                 definition: 'Submission and revision cycle.',
-                output: 'Journal submission, response to reviewers, resubmission.'
+                output: 'Screen-ready publications'
             },
-            'PROMOTION': {
+            'PROM': {
                 definition: 'Communication and outreach.',
-                output: 'LinkedIn announcements (preprint ×1, publication ×2), conference presentations ×3, other talks ×4.'
+                output: 'LinkedIn announcements on preprint ×1, publication ×2, conference presentations ×3, other talks ×4.'
             },
         };
 
-        const STAGE_ORDER = ['IDEA', 'PREPARATION', 'DATA', 'WRITING', 'PUBLICATION', 'PROMOTION'];
+        const STAGE_ORDER = ['IDEA', 'PREP', 'DATA', 'WRIT', 'PUB', 'PROM'];
         const stageColors = {
-            'IDEA': 'stage-idea', 'PREPARATION': 'stage-prep', 'DATA': 'stage-data', 
-            'WRITING': 'stage-writing', 'PUBLICATION': 'stage-pub', 'PROMOTION': 'stage-promo'
+            'IDEA': 'stage-idea', 'PREP': 'stage-prep', 'DATA': 'stage-data', 
+            'WRIT': 'stage-writ', 'PUB': 'stage-pub', 'PROM': 'stage-promo'
         };
 
 
